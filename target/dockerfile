@@ -14,12 +14,13 @@ RUN mkdir -p /var/run/sshd
 RUN useradd -m -s /bin/bash ansible \
     && echo "ansible:ansible" | chpasswd \
     && usermod -aG sudo ansible \
-    && echo "ansible ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ansible
+    && echo "ansible ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ansible \
+    && chmod 0440 /etc/sudoers.d/ansible
 
-# Enable password auth for lab
-RUN sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config \
-    && sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config \
-    && sed -i 's/^#PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
+# Enable password auth for lab (force set to avoid sed miss)
+RUN sed -i 's/^\s*#\?\s*PasswordAuthentication\s\+.*/PasswordAuthentication yes/' /etc/ssh/sshd_config \
+    && sed -i 's/^\s*#\?\s*PermitRootLogin\s\+.*/PermitRootLogin no/' /etc/ssh/sshd_config \
+    && sed -i 's/^\s*#\?\s*PubkeyAuthentication\s\+.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
 
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D", "-e"]
