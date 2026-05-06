@@ -1,0 +1,11 @@
+---
+- name: Create a Kubernetes namespace with debug pod
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: "Apply namespace and busybox-debug for {{ envname }}"
+      kubernetes.core.k8s:
+        state: present
+        template: namespace_manifest.yml.j2

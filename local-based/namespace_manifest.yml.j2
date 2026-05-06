@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "{{ envname }}"
+  labels:
+    managed-by: ansible
+    environment: "{{ envname }}"
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "busybox-debug"
+  namespace: "{{ envname }}"
+  labels:
+    app: busybox-debug
+spec:
+  containers:
+    - name: busybox
+      image: busybox:latest
+      command: ["sh", "-c", "while true; do sleep 3600; done"]
+      tty: true
+      stdin: true
+      resources:
+        requests:
+          memory: "32Mi"
+          cpu: "50m"
+        limits:
+          memory: "64Mi"
+          cpu: "100m"
+  restartPolicy: Always
