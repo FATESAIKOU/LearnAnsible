@@ -1,0 +1,11 @@
+---
+- name: Delete a Kubernetes namespace
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: "Delete namespace {{ envname }}"
+      kubernetes.core.k8s:
+        state: absent
+        template: namespace_manifest.yml.j2
